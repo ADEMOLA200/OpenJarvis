@@ -39,7 +39,8 @@ SIDECAR_LOCK_PATH = RUNTIME_DIR / "mining.lock"
 # Pearl source cache for build-from-pin path (see spec §7.2).
 PEARL_CACHE_DIR = Path.home() / ".openjarvis" / "cache" / "pearl"
 
-# ── cpu-pearl provider (Spec B v1, Apple Silicon and other non-CUDA hosts) ────
+# ── cpu-pearl provider (Apple Silicon / non-CUDA hosts) ────────────────────────
+# See spec ``docs/design/2026-05-05-apple-silicon-pearl-mining-design.md`` §13.
 
 # Default mining-loop matrix shapes. These are the same values used by Pearl's
 # upstream test_python_api.py — known to produce a valid proof per call at test
@@ -51,10 +52,13 @@ CPU_PEARL_DEFAULT_N = 128
 CPU_PEARL_DEFAULT_K = 1024
 CPU_PEARL_DEFAULT_RANK = 32
 
-# Pattern lists copied verbatim from upstream Pearl tests
-# (pearl/py-pearl-mining/tests/test_python_api.py).
-CPU_PEARL_DEFAULT_ROWS_PATTERN = [0, 8, 64, 72]
-CPU_PEARL_DEFAULT_COLS_PATTERN = [0, 1, 8, 9, 32, 33, 40, 41]
+# Default PeriodicPattern row/col index sets that select which tiles of the
+# noised matmul produce mining shares. These specific values match Pearl's
+# upstream test fixture (py-pearl-mining/tests/test_python_api.py); changing
+# them changes which subset of the matrix gets probed each call. Don't change
+# without understanding the impact on hashrate vs. proof shape.
+CPU_PEARL_DEFAULT_ROWS_PATTERN = (0, 8, 64, 72)
+CPU_PEARL_DEFAULT_COLS_PATTERN = (0, 1, 8, 9, 32, 33, 40, 41)
 
 # Names of the Pearl Python packages cpu-pearl depends on, in install order.
 # These are installed from local paths under PEARL_CACHE_DIR (or, in the
